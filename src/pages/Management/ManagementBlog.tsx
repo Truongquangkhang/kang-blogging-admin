@@ -1,91 +1,158 @@
 import Box from '@mui/material/Box';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import Tooltip from '@mui/material/Tooltip';
+
 import DefaultLayout from '../../layout/DefaultLayout';
 import { useEffect, useState } from 'react';
 import ApiBlog from '../../apis/kang-blogging/blog';
 import { IBlogMetadata } from '../../interfaces/model/blog_metadata';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { ICategory } from '../../interfaces/model/category';
+import { IUSerMetadata } from '../../interfaces/model/user_metadata';
+import { FormatRelativeTime } from '../../utils/convert';
+import { IconButton } from '@mui/material';
+import { FaEye } from 'react-icons/fa';
+import { MdOutlineModeEdit, MdDelete } from 'react-icons/md';
 
-const columns: GridColDef<(typeof rows)[number]>[] = [
-  { field: 'id', headerName: 'ID', width: 90 },
+const columns1: GridColDef[] = [
   {
     field: 'name',
-    headerName: 'First name',
+    headerName: 'Name',
+    width: 350,
+  },
+  {
+    field: `author`,
+    headerName: `Author`,
     width: 150,
-    editable: true,
+    renderCell: (params) => {
+      const author = params.value as IUSerMetadata;
+      return <p>{author.displayName}</p>;
+    },
   },
   {
-    field: 'lastName',
-    headerName: 'Last name',
+    field: 'categories',
+    headerName: 'Categories',
+    width: 250,
+    renderCell: (params) => {
+      const categories = params.value as ICategory[];
+      const displayCategories = categories.slice(0, 1);
+      const remainingCount = categories.length - displayCategories.length;
+
+      return (
+        <Tooltip
+          className="cursor-pointer"
+          title={
+            <div>
+              {categories.map((category) => (
+                <div key={category.id}>{category.name}</div>
+              ))}
+            </div>
+          }
+          placement="top"
+          arrow
+        >
+          <Stack direction="row" spacing={1}>
+            {displayCategories.map((category) => (
+              <Chip key={category.id} label={category.name} />
+            ))}
+            {remainingCount > 0 && <Chip label={`+${remainingCount} more`} />}
+          </Stack>
+        </Tooltip>
+      );
+    },
+  },
+  {
+    field: 'totalBlogComments',
+    headerName: 'Comments',
+    width: 100,
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Edit at',
+    width: 100,
+    renderCell: (params) => {
+      const timestamp = params.value as number;
+      return <p>{FormatRelativeTime(timestamp)}</p>;
+    },
+  },
+  {
+    field: 'thumbnail',
+    headerName: 'Actions',
     width: 150,
-    editable: true,
-  },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+    renderCell: () => (
+      <Stack direction="row" spacing={1}>
+        <Tooltip title="Edit">
+          <IconButton onClick={() => {}}>
+            <FaEye className="w-3 h-4" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Show">
+          <IconButton onClick={() => {}}>
+            <MdOutlineModeEdit className="w-3 h-4" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Delete">
+          <IconButton onClick={() => {}}>
+            <MdDelete className="w-3 h-4" />
+          </IconButton>
+        </Tooltip>
+      </Stack>
+    ),
   },
 ];
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+const Blogs: IBlogMetadata[] = [];
 
 const ManagementBlog = () => {
-  const [blogs, setBlogs] = useState<GridRowsProp[]>([]);
-  const [rowCount, setRowCount] = useState(0);
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
+  //const [blogs, setBlogs] = useState<IBlogMetadata[]>([]);
+  const [pageState, setPageState] = useState({
+    page: 0,
+    pageSize: 20,
+    total: 0,
+    isLoading: true,
+    data: Blogs,
+  });
 
   useEffect(() => {
-    // ApiBlog.getBlogs({
-    //   page: page,
-    //   pageSize: pageSize,
-    // })
-    //   .then((rs) => {
-    //     setBlogs(rs.data.data.blogs);
-    //     setRowCount(rs.data.data.pagination.total);
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //   });
-  }, [page, pageSize]);
+    const fetchData = async () => {
+      ApiBlog.getBlogs({
+        page: pageState.page,
+        pageSize: pageState.pageSize,
+      }).then((rs) => {
+        setPageState((old) => ({
+          ...old,
+          isLoading: false,
+          total: rs.data.data.pagination.total,
+          data: rs.data.data.blogs,
+        }));
+        //setBlogs(rs.data.data.blogs);
+      });
+    };
+    fetchData();
+  }, [pageState.page, pageState.pageSize]);
   return (
     <DefaultLayout>
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ height: 600, width: '100%' }}>
         <DataGrid
-          columns={columns}
+          rows={pageState.data}
+          rowCount={pageState.total}
+          loading={pageState.isLoading}
+          rowsPerPageOptions={[20, 30, 50, 70]}
           pagination
-          sortingMode="server"
-          filterMode="server"
+          page={pageState.page}
+          pageSize={pageState.pageSize}
+          // sortingMode="server"
+          // filterMode="server"
           paginationMode="server"
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
+          onPageChange={(newPage) => {
+            setPageState((old) => ({ ...old, page: newPage }));
           }}
-          pageSizeOptions={[5]}
+          onPageSizeChange={(newPageSize) =>
+            setPageState((old) => ({ ...old, pageSize: newPageSize }))
+          }
+          columns={columns1}
           checkboxSelection
-          disableRowSelectionOnClick
         />
       </Box>
     </DefaultLayout>
