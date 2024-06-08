@@ -9,3 +9,11 @@ export interface GetCategoriesResponse {
         pagination: IPagination
     }
 }
+
+export interface CreateCategoryResponse {
+    code: number
+    message: string
+    data: {
+        category: ICategory
+    }
+}

@@ -26,8 +26,11 @@ const ApiBlog = {
                 Authorization: `Bearer ${access_token}`
             },
         })
+    },
+    deleteBlog: (blog_id: string) => {
+        const url = `/api/v1/blog/${blog_id}`;
+        return axiosClient.delete<UpdateBlogResponse>(url)
     }
-
 }
 
 

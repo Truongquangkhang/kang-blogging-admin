@@ -1,11 +1,47 @@
+import { useState } from 'react';
+import { useAppDispatch } from '../../hooks/useAppSelectorDitpatch';
+import { setNotify } from '../../redux/reducers/notify';
+import { NotifyType } from '../../interfaces/model/notify';
+import ApiCategory from '../../apis/kang-blogging/category';
+
 interface Props {
   openPopUp: boolean;
   closePopUp: any;
 }
 
 const CreateCategory = ({ openPopUp, closePopUp }: Props) => {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const dispatch = useAppDispatch();
   const handleButtonDissmis = () => {
     closePopUp();
+  };
+  const handlerButtonCreate = () => {
+    if (name == '' || description == '') {
+      dispatch(
+        setNotify({
+          title: 'Missing required fields',
+          description: '',
+          mustShow: true,
+          type: NotifyType.ERROR,
+        }),
+      );
+    } else {
+      ApiCategory.careateCategory({ name: name, description: description })
+        .then(() => {
+          handleButtonDissmis();
+        })
+        .catch(() => {
+          dispatch(
+            setNotify({
+              title: 'an occurred error',
+              description: '',
+              mustShow: true,
+              type: NotifyType.ERROR,
+            }),
+          );
+        });
+    }
   };
 
   if (openPopUp !== true) return null;
@@ -24,8 +60,11 @@ const CreateCategory = ({ openPopUp, closePopUp }: Props) => {
               </label>
               <div className="relative">
                 <input
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
                   type="text"
-                  placeholder="Enter your username"
                   className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
@@ -37,8 +76,11 @@ const CreateCategory = ({ openPopUp, closePopUp }: Props) => {
               </label>
               <div className="relative">
                 <input
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
                   type="text"
-                  placeholder="Enter your password"
                   className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
@@ -55,23 +97,14 @@ const CreateCategory = ({ openPopUp, closePopUp }: Props) => {
               />
               <input
                 type="button"
-                onClick={() => {}}
+                onClick={() => {
+                  handlerButtonCreate();
+                }}
                 value="Create"
                 className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
               />
             </div>
           </form>
-          {/* <div className="flex justify-center items-center">
-            <button
-              className="mt-3 w-1/3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              type="button"
-              onClick={() => {
-                handleButtonContinue();
-              }}
-            >
-              Continue
-            </button>
-          </div> */}
         </div>
       </div>
     </div>

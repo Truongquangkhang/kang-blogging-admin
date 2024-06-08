@@ -18,6 +18,7 @@ import ManagementComment from './pages/ManagementComment/ManagementComment';
 import ManagementCategory from './pages/ManagementCategories/ManagementCategories';
 import { useAppSelector } from './hooks/useAppSelectorDitpatch';
 import LogOut from './pages/Authentication/LogOut';
+import ManagementPolicy from './pages/ManagementPolicy/ManagementPolicy';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -104,6 +105,21 @@ function App() {
               <>
                 <PageTitle title="Categories Management" />
                 <ManagementCategory />
+              </>
+            ) : (
+              <>
+                <Navigate to={'/auth/signin'} />
+              </>
+            )
+          }
+        />
+        <Route
+          path="/manage-policy"
+          element={
+            authStates.isLogin ? (
+              <>
+                <PageTitle title="Policies Management" />
+                <ManagementPolicy />
               </>
             ) : (
               <>
