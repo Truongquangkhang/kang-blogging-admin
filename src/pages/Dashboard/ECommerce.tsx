@@ -25,7 +25,11 @@ const ECommerce: React.FC = () => {
   }, []);
 
   if (isLoading) {
-    return <p>LOADING...</p>;
+    return (
+      <DefaultLayout>
+        <p>LOADING...</p>
+      </DefaultLayout>
+    );
   }
   return (
     <DefaultLayout>
