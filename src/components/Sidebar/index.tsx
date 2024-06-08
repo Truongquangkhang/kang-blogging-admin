@@ -5,6 +5,8 @@ import Logo from '../../images/logo/logo.svg';
 import { FiBook } from 'react-icons/fi';
 import { TfiComment } from 'react-icons/tfi';
 import { FaHashtag } from 'react-icons/fa';
+import { MdOutlineAdminPanelSettings } from 'react-icons/md';
+
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
@@ -246,9 +248,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Categories Management
                 </NavLink>
               </li>
-              {/* <!-- Menu Item Profile --> */}
-
-              {/* <!-- Menu Item Forms --> */}
+              <li>
+                <NavLink
+                  to="/policy"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('manage-category') &&
+                    'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  <MdOutlineAdminPanelSettings />
+                  Policies Systemg
+                </NavLink>
+              </li>
+              {/* 
               <SidebarLinkGroup
                 activeCondition={
                   pathname === '/forms' || pathname.includes('forms')
@@ -319,7 +331,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           />
                         </svg>
                       </NavLink>
-                      {/* <!-- Dropdown Menu Start --> */}
                       <div
                         className={`translate transform overflow-hidden ${
                           !open && 'hidden'
@@ -350,15 +361,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           </li>
                         </ul>
                       </div>
-                      {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
                   );
                 }}
-              </SidebarLinkGroup>
-              {/* <!-- Menu Item Forms --> */}
+              </SidebarLinkGroup> */}
 
-              {/* <!-- Menu Item Tables --> */}
-              <li>
+              {/* <li>
                 <NavLink
                   to="/tables"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
@@ -393,9 +401,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   Tables
                 </NavLink>
               </li>
-              {/* <!-- Menu Item Tables --> */}
 
-              {/* <!-- Menu Item Settings --> */}
               <li>
                 <NavLink
                   to="/settings"
@@ -435,8 +441,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </svg>
                   Settings
                 </NavLink>
-              </li>
-              {/* <!-- Menu Item Settings --> */}
+              </li> */}
             </ul>
           </div>
 
