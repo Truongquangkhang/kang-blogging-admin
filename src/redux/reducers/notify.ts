@@ -5,7 +5,7 @@ import { INotify } from '../../interfaces/model/notify'
 const initialState: INotify = {
     title: "",
     description: "",
-    mustShow: false
+    mustShow: false,
 }
 
 const notifySlice = createSlice({
@@ -16,6 +16,7 @@ const notifySlice = createSlice({
       state.mustShow = action.payload.mustShow
       state.description = action.payload.description
       state.title = action.payload.title
+      state.type = action.payload.type
     },
   },
 })

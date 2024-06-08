@@ -16,7 +16,7 @@ const columns1: GridColDef[] = [
   {
     field: 'name',
     headerName: 'Name',
-    width: 350,
+    width: 300,
   },
   {
     field: `author`,
@@ -30,7 +30,7 @@ const columns1: GridColDef[] = [
   {
     field: 'categories',
     headerName: 'Categories',
-    width: 250,
+    width: 200,
     renderCell: (params) => {
       const categories = params.value as ICategory[];
       const displayCategories = categories.slice(0, 1);
@@ -74,9 +74,29 @@ const columns1: GridColDef[] = [
     },
   },
   {
+    field: 'published',
+    headerName: 'Status',
+    width: 100,
+    renderCell: (params) => {
+      if (params.value) {
+        return (
+          <p className="px-1 py-2 w-3/4 text-center rounded-md text-xs bg-green-100">
+            Published
+          </p>
+        );
+      } else {
+        return (
+          <p className="px-1 py-2 w-3/4 text-center rounded-md text-xs bg-yellow-100">
+            Draft
+          </p>
+        );
+      }
+    },
+  },
+  {
     field: '#',
     headerName: 'Actions',
-    width: 150,
+    width: 100,
     renderCell: () => (
       <Stack direction="row" className="items-center w-full" spacing={1}>
         <Tooltip title="Edit">

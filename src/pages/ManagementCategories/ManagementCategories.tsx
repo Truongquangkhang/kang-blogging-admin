@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ICategory } from '../../interfaces/model/category';
 import ApiCategory from '../../apis/kang-blogging/category';
+import CreateCategory from './CreateCategory';
 
 const columns1: GridColDef[] = [
   {
@@ -94,6 +95,7 @@ const ManagementCategory = () => {
     isLoading: true,
     data: Categories,
   });
+  const [openPopup, setOpenPopup] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,8 +115,19 @@ const ManagementCategory = () => {
   }, [pageState.page, pageState.pageSize]);
   return (
     <DefaultLayout>
+      <CreateCategory
+        openPopUp={openPopup}
+        closePopUp={() => {
+          setOpenPopup(false);
+        }}
+      />
       <div className="flex justify-end p-2">
-        <button className="p-2 bg-blue-500 rounded-md hover:bg-blue-900 text-white">
+        <button
+          onClick={() => {
+            setOpenPopup(true);
+          }}
+          className="p-2 bg-blue-500 rounded-md hover:bg-blue-900 text-white"
+        >
           New Category
         </button>
       </div>

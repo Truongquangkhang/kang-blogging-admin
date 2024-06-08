@@ -38,6 +38,11 @@ const columns1: GridColDef[] = [
     width: 150,
   },
   {
+    field: 'totalViolations',
+    headerName: ' Total Violations',
+    width: 150,
+  },
+  {
     field: 'isActive',
     headerName: 'Status',
     width: 150,

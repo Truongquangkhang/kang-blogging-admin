@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 import { AxiosResponse } from 'axios';
 import axiosClient from '../../apis/kang-blogging/axios_client';
 import ApiIam from '../../apis/kang-blogging/iam';
@@ -8,7 +8,6 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../hooks/useAppSelectorDitpatch';
-import { useNavigate } from 'react-router-dom';
 
 // Define AuthContextType interface
 interface AuthContextType {
@@ -26,22 +25,11 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  // const [user, setUser] = useState<IUSerMetadata | null>(null)
-  // const [loading, setLoading] = useState(true)
   const authStates = useAppSelector((state) => state.auth);
-  const userStates = useAppSelector((state) => state.user);
-  //   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const contextValue: AuthContextType = {
     // user,
   };
-  //const apiUrl = process.env.REACT_APP_API_URL;
-  // useEffect(() => {
-  //   if (!authStates.isLogin) {
-  //     window.open('/auth/login');
-  //   }
-  // }, []);
-
   axiosClient.interceptors.request.use(
     function (config) {
       if (authStates.accessToken && config.headers) {
@@ -57,40 +45,40 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     },
   );
 
-  //   axiosClient.interceptors.response.use(
-  //     (response: AxiosResponse) => response,
-  //     async (error) => {
-  //       const originalRequest = error.config;
-  //       if (error.response.status === 401 && !originalRequest._retry) {
-  //         originalRequest._retry = true;
-  //         if (authStates.refreshToken) {
-  //           ApiIam.refreshToken(authStates.refreshToken).then((rs) => {
-  //             if (rs) {
-  //               const newAccessToken = rs.data.data.access_token;
-  //               dispatch(
-  //                 setAuth({
-  //                   isLogin: true,
-  //                   accessToken: newAccessToken,
-  //                   refreshToken: authStates.refreshToken,
-  //                 }),
-  //               );
-  //               originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-  //               return axiosClient(originalRequest);
-  //             }
-  //           });
-  //         } else {
-  //           dispatch(
-  //             setNotify({
-  //               title: 'Please login !!!',
-  //               description: '',
-  //               mustShow: true,
-  //             }),
-  //           );
-  //         }
-  //       }
-  //       return Promise.reject(error);
-  //     },
-  //   );
+  axiosClient.interceptors.response.use(
+    (response: AxiosResponse) => response,
+    async (error) => {
+      const originalRequest = error.config;
+      if (error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        if (authStates.refreshToken) {
+          ApiIam.refreshToken(authStates.refreshToken).then((rs) => {
+            if (rs) {
+              const newAccessToken = rs.data.data.access_token;
+              dispatch(
+                setAuth({
+                  isLogin: true,
+                  accessToken: newAccessToken,
+                  refreshToken: authStates.refreshToken,
+                }),
+              );
+              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+              return axiosClient(originalRequest);
+            }
+          });
+        } else {
+          dispatch(
+            setNotify({
+              title: 'Please login !!!',
+              description: '',
+              mustShow: true,
+            }),
+          );
+        }
+      }
+      return Promise.reject(error);
+    },
+  );
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
