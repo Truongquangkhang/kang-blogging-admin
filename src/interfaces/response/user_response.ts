@@ -26,3 +26,8 @@ export interface UpdateUserResponse {
         user: IUSerMetadata
     }
 }
+
+export interface DeleteUserResponse {
+    code: number
+    message: string
+}

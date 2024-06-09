@@ -1,5 +1,6 @@
 import { IBlogMetadata } from "../model/blog_metadata"
 import { IComment } from "../model/comment"
+import { IPolicy } from "../model/policy"
 
 export interface GetDashBoardResponse {
     code: number
@@ -15,4 +16,17 @@ export interface GetDashBoardResponse {
         latestBlogs: IBlogMetadata[]
         latestComments: IComment[]
     }
+}
+
+export interface GetPoliciesResponse {
+    code: number
+    message: string
+    data: {
+        policies: IPolicy[]
+    }
+}
+
+export interface UpdatePoliciesResponse {
+    code: number
+    message: string
 }
