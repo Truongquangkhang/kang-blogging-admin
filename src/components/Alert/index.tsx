@@ -8,8 +8,8 @@ interface Props {
 }
 
 const typeClasses = {
-  [NotifyType.SUCCESS]: 'bg-green-500 text-white',
-  [NotifyType.ERROR]: 'bg-red-500 text-white',
+  [NotifyType.SUCCESS]: 'bg-green-500 text-green',
+  [NotifyType.ERROR]: 'bg-red-500 text-red',
   [NotifyType.INFO]: 'bg-blue-500 text-white',
   [NotifyType.WARNING]: 'bg-yellow-500 text-white',
 };

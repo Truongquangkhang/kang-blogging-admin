@@ -22,6 +22,7 @@ export interface UpdateBlogRequest {
     thumbnail?: string | null
     content?: string | null
     categoryIds?: string[] | null
+    published?: boolean | null
 }
 
 export interface DeleteBlogRequest {}

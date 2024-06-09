@@ -51,7 +51,13 @@ const AllBlogs = () => {
       field: '#',
       headerName: 'Actions',
       width: 100,
-      renderCell: (params) => renderActions(params, handlerDeleteBlog),
+      renderCell: (params) =>
+        renderActions(
+          params,
+          handlerDeleteBlog,
+          handlerMarkDraftOrPublishBlog,
+          handlerViewBlog,
+        ),
     },
   ];
   const [pageState, setPageState] = useState({
@@ -82,6 +88,44 @@ const AllBlogs = () => {
         );
       });
   };
+
+  const handlerMarkDraftOrPublishBlog = (
+    blog_id: string,
+    currentStatus: boolean,
+  ) => {
+    ApiBlog.updateBlog(blog_id, { published: !currentStatus })
+      .then(() => {
+        setPageState((prevState) => ({
+          ...prevState,
+          data: pageState.data.map((e) => {
+            if (e.id == blog_id) {
+              e.published = !e.published;
+            }
+            return e;
+          }),
+        }));
+      })
+      .catch((err) => {
+        const e = MapErrorResponse((err as AxiosError).response);
+        dispatch(
+          setNotify({
+            title: 'an occurred error',
+            description: e.message,
+            mustShow: true,
+            type: NotifyType.ERROR,
+          }),
+        );
+      });
+  };
+
+  const handlerViewBlog = (blog_id: string) => {
+    var url = process.env.KANG_BLOGGING_URL;
+    console.log(url);
+    if (url) {
+      window.open(`${url}/blog/${blog_id}`);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       ApiBlog.getBlogs({
