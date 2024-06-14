@@ -3,6 +3,7 @@ export interface GetUsersRequest {
     pageSize: number
     searchBy?: string | null
     searchName?: string | null
+    isActive?: boolean | null
 }
 
 export interface GetUserDetailRequest {
@@ -17,4 +18,8 @@ export interface UpdateUserRequest {
     phoneNumber?: string | null
     gender?: boolean | null
     description?: string | null
+}
+
+export interface DeleteUserRequest {
+    
 }

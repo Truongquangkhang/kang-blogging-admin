@@ -11,4 +11,6 @@ export interface IBlogMetadata {
     author: IUSerMetadata
     totalBlogComments: number
     updatedAt: number
+    published: boolean
+    isDeprecated: boolean
 }

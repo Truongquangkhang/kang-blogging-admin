@@ -19,15 +19,14 @@ const ApiBlog = {
             }
         }, )
     },
-    updateBlog: (blog_id: string, access_token: string, params: UpdateBlogRequest) => {
+    updateBlog: (blog_id: string, params: UpdateBlogRequest) => {
         const url = `/api/v1/blog/${blog_id}`;
-        return axiosClient.patch<UpdateBlogResponse>(url, params, {
-            headers: {
-                Authorization: `Bearer ${access_token}`
-            },
-        })
+        return axiosClient.patch<UpdateBlogResponse>(url, params)
+    },
+    deleteBlog: (blog_id: string) => {
+        const url = `/api/v1/blog/${blog_id}`;
+        return axiosClient.delete<UpdateBlogResponse>(url)
     }
-
 }
 
 

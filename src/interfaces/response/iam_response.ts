@@ -17,3 +17,11 @@ export interface ICheckExistUserResponse {
         alreadyExist: boolean
     }
 }
+
+export interface IRefreshTokenResponse {
+    code: number
+    message: string
+    data: {
+        access_token: string
+    }
+}

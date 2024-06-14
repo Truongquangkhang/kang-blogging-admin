@@ -34,3 +34,8 @@ export interface UpdateBlogResponse {
         blog: IBlog
     }
 }
+
+export interface DeleteBlogResponse {
+    code: number
+    message: string
+}

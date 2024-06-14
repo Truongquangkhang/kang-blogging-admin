@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
-import SignUp from './pages/Authentication/SignUp';
 import Chart from './pages/Chart';
 import ECommerce from './pages/Dashboard/ECommerce';
 import FormElements from './pages/Form/FormElements';
@@ -17,9 +16,13 @@ import ManagementBlog from './pages/ManagementBlog/ManagementBlog';
 import ManagementUser from './pages/ManagementUser/ManagementUser';
 import ManagementComment from './pages/ManagementComment/ManagementComment';
 import ManagementCategory from './pages/ManagementCategories/ManagementCategories';
+import { useAppSelector } from './hooks/useAppSelectorDitpatch';
+import LogOut from './pages/Authentication/LogOut';
+import ManagementPolicy from './pages/ManagementPolicy/ManagementPolicy';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
+  const authStates = useAppSelector((state) => state.auth);
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -38,46 +41,91 @@ function App() {
         <Route
           index
           element={
-            <>
-              <PageTitle title="eCommerce Dashboard " />
-              <ECommerce />
-            </>
+            authStates.isLogin ? (
+              <>
+                <PageTitle title="eCommerce Dashboard " />
+                <ECommerce />
+              </>
+            ) : (
+              <>
+                <Navigate to={'/auth/signin'} />
+              </>
+            )
           }
         />
         <Route
           path="/manage-blog"
           element={
-            <>
-              <PageTitle title="Blogs Management " />
-              <ManagementBlog />
-            </>
+            authStates.isLogin ? (
+              <>
+                <PageTitle title="Blogs Management " />
+                <ManagementBlog />
+              </>
+            ) : (
+              <>
+                <Navigate to={'/auth/signin'} />
+              </>
+            )
           }
         />
         <Route
           path="/manage-user"
           element={
-            <>
-              <PageTitle title="Users Management" />
-              <ManagementUser />
-            </>
+            authStates.isLogin ? (
+              <>
+                <PageTitle title="Users Management" />
+                <ManagementUser />
+              </>
+            ) : (
+              <>
+                <Navigate to={'/auth/signin'} />
+              </>
+            )
           }
         />
         <Route
           path="/manage-comment"
           element={
-            <>
-              <PageTitle title="Comments Management" />
-              <ManagementComment />
-            </>
+            authStates.isLogin ? (
+              <>
+                <PageTitle title="Comments Management" />
+                <ManagementComment />
+              </>
+            ) : (
+              <>
+                <Navigate to={'/auth/signin'} />
+              </>
+            )
           }
         />
         <Route
           path="/manage-category"
           element={
-            <>
-              <PageTitle title="Categories Management" />
-              <ManagementCategory />
-            </>
+            authStates.isLogin ? (
+              <>
+                <PageTitle title="Categories Management" />
+                <ManagementCategory />
+              </>
+            ) : (
+              <>
+                <Navigate to={'/auth/signin'} />
+              </>
+            )
+          }
+        />
+        <Route
+          path="/manage-policy"
+          element={
+            authStates.isLogin ? (
+              <>
+                <PageTitle title="Policies Management" />
+                <ManagementPolicy />
+              </>
+            ) : (
+              <>
+                <Navigate to={'/auth/signin'} />
+              </>
+            )
           }
         />
         <Route
@@ -153,11 +201,11 @@ function App() {
           }
         />
         <Route
-          path="/auth/signup"
+          path="/auth/logout"
           element={
             <>
-              <PageTitle title="Signup " />
-              <SignUp />
+              <PageTitle title="Logout " />
+              <LogOut />
             </>
           }
         />
