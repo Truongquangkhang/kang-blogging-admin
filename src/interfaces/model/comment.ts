@@ -19,3 +19,11 @@ export interface ICommentItem {
     blogId: string
     replyCommentId?: string | null
 }
+
+export interface ICommentMetadata {
+    id: string
+    content: string
+    isToxicity: boolean
+    createdAt: number
+    updateAt: number
+}

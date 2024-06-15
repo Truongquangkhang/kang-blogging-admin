@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { IUSerMetadata } from '../../interfaces/model/user_metadata';
 import Avatar from '@mui/material/Avatar';
 import ApiUser from '../../apis/kang-blogging/user';
 import { renderUserAction } from './Helper';
@@ -10,8 +9,52 @@ import { AxiosError } from 'axios';
 import { useAppDispatch } from '../../hooks/useAppSelectorDitpatch';
 import { setNotify } from '../../redux/reducers/notify';
 import { NotifyType } from '../../interfaces/model/notify';
+import { IUser } from '../../interfaces/model/user';
 
-const Users: IUSerMetadata[] = [];
+const Users: UserFullData[] = [];
+
+export interface UserFullData {
+  id: string;
+  name: string;
+  displayName: string;
+  avatar?: string;
+  description?: string | null;
+  isActive: boolean;
+  email: string;
+  gender: boolean;
+  createdAt: number;
+  dateOfBirth?: number | null;
+  totalBlogs: number;
+  totalComments: number;
+  totalFollowers: number;
+  totalFolloweds: number;
+  totalViolations: number;
+  isFollowed: boolean;
+  isFollower: boolean;
+}
+
+export const convertUserResponse = (user: IUser) => {
+  var temp: UserFullData = {
+    id: user.userInfo.id,
+    name: user.userInfo.name,
+    displayName: user.userInfo.displayName,
+    avatar: user.userInfo.avatar,
+    isActive: user.userInfo.isActive,
+    description: user.userInfo.description,
+    email: user.email,
+    gender: user.gender,
+    createdAt: user.createdAt,
+    dateOfBirth: user.dateOfBirth,
+    totalBlogs: user.totalBlogs,
+    totalComments: user.totalComments,
+    totalFolloweds: user.totalFolloweds,
+    totalFollowers: user.totalFollowers,
+    isFollowed: user.isFollowed,
+    isFollower: user.isFollower,
+    totalViolations: user.totalViolations,
+  };
+  return temp;
+};
 
 const AllUsers = () => {
   const dispatch = useAppDispatch();
@@ -27,7 +70,7 @@ const AllUsers = () => {
     {
       field: 'name',
       headerName: 'Name',
-      width: 200,
+      width: 100,
     },
     {
       field: `displayName`,
@@ -118,7 +161,7 @@ const AllUsers = () => {
           ...old,
           isLoading: false,
           total: rs.data.data.pagination.total,
-          data: rs.data.data.users,
+          data: rs.data.data.users.map((u) => convertUserResponse(u)),
         }));
       });
     };
@@ -145,6 +188,7 @@ const AllUsers = () => {
         }
         columns={columns1}
         checkboxSelection
+        // getRowId={(row: IUser) => row.userInfo.id}
       />
     </Box>
   );

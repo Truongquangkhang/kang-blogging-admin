@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
 import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { IUSerMetadata } from '../../interfaces/model/user_metadata';
 import Avatar from '@mui/material/Avatar';
 import ApiUser from '../../apis/kang-blogging/user';
 import { renderUserAction } from './Helper';
@@ -10,8 +9,9 @@ import { useAppDispatch } from '../../hooks/useAppSelectorDitpatch';
 import { AxiosError } from 'axios';
 import { setNotify } from '../../redux/reducers/notify';
 import { NotifyType } from '../../interfaces/model/notify';
+import { UserFullData, convertUserResponse } from './AllUser';
 
-const Users: IUSerMetadata[] = [];
+const Users: UserFullData[] = [];
 
 const DeprecatedUsers = () => {
   const dispatch = useAppDispatch();
@@ -116,7 +116,7 @@ const DeprecatedUsers = () => {
           ...old,
           isLoading: false,
           total: rs.data.data.pagination.total,
-          data: rs.data.data.users,
+          data: rs.data.data.users.map((u) => convertUserResponse(u)),
         }));
       });
     };

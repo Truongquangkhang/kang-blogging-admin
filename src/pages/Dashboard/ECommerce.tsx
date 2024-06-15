@@ -7,6 +7,7 @@ import ListBlog from '../../components/ListBlog/ListBlog';
 import ListComment from '../../components/ListComment/ListComment';
 import { FiBook, FiUser, FiMessageSquare } from 'react-icons/fi';
 import { FaHashtag } from 'react-icons/fa';
+import Loader from '../../common/Loader';
 
 const ECommerce: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,7 +28,7 @@ const ECommerce: React.FC = () => {
   if (isLoading) {
     return (
       <DefaultLayout>
-        <p>LOADING...</p>
+        <Loader />
       </DefaultLayout>
     );
   }
