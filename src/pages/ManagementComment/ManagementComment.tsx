@@ -52,9 +52,17 @@ const columns1: GridColDef[] = [
     width: 130,
     renderCell: (params) => {
       if (params.value) {
-        return <p className="bg-red-500 p-3">TOXIC</p>;
+        return (
+          <p className="bg-red-300 w-full text-center text-xs rounded p-2">
+            TOXIC
+          </p>
+        );
       } else {
-        return <p className="bg-green-300 text-xs rounded p-2">NON-TOXIC</p>;
+        return (
+          <p className="bg-green-300 w-full text-center text-xs rounded p-2">
+            NON-TOXIC
+          </p>
+        );
       }
     },
   },
@@ -132,6 +140,7 @@ const ManagementComment = () => {
       ApiComment.getCommentsByParam({
         page: pageState.page,
         pageSize: pageState.pageSize,
+        sortBy: 'created_at',
       }).then((rs) => {
         setPageState((old) => ({
           ...old,
