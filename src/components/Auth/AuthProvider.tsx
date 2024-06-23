@@ -2,7 +2,7 @@ import React, { createContext, useContext, ReactNode } from 'react';
 import { AxiosResponse } from 'axios';
 import axiosClient from '../../apis/kang-blogging/axios_client';
 import ApiIam from '../../apis/kang-blogging/iam';
-import { setAuth } from '../../redux/reducers/auth';
+import { logOut, setAuth } from '../../redux/reducers/auth';
 import { setNotify } from '../../redux/reducers/notify';
 import {
   useAppDispatch,
@@ -32,7 +32,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
   axiosClient.interceptors.request.use(
     function (config) {
-      if (authStates.accessToken && config.headers) {
+      if (
+        authStates.accessToken &&
+        config.headers &&
+        config.headers.Authorization == undefined
+      ) {
         config.headers.Authorization = `Bearer ${authStates.accessToken}`;
       } else {
         console.log('Hello');
@@ -49,23 +53,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     (response: AxiosResponse) => response,
     async (error) => {
       const originalRequest = error.config;
+      if (error.response.status === 404) {
+        window.location.href = '/*';
+      }
       if (error.response.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
         if (authStates.refreshToken) {
-          ApiIam.refreshToken(authStates.refreshToken).then((rs) => {
-            if (rs) {
-              const newAccessToken = rs.data.data.access_token;
+          ApiIam.refreshToken(authStates.refreshToken)
+            .then((rs) => {
+              if (rs) {
+                const newAccessToken = rs.data.data.access_token;
+                dispatch(
+                  setAuth({
+                    isLogin: true,
+                    accessToken: newAccessToken,
+                    refreshToken: authStates.refreshToken,
+                  }),
+                );
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                return axiosClient(originalRequest);
+              }
+            })
+            .catch(() => {
               dispatch(
-                setAuth({
-                  isLogin: true,
-                  accessToken: newAccessToken,
-                  refreshToken: authStates.refreshToken,
+                setNotify({
+                  title: 'Please login !!!',
+                  description: '',
+                  mustShow: true,
                 }),
               );
-              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-              return axiosClient(originalRequest);
-            }
-          });
+              dispatch(logOut());
+            });
         } else {
           dispatch(
             setNotify({
@@ -74,6 +92,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               mustShow: true,
             }),
           );
+          dispatch(logOut());
         }
       }
       return Promise.reject(error);

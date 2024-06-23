@@ -10,6 +10,7 @@ import { useAppDispatch } from '../../hooks/useAppSelectorDitpatch';
 import { setNotify } from '../../redux/reducers/notify';
 import { NotifyType } from '../../interfaces/model/notify';
 import { IUser } from '../../interfaces/model/user';
+import ChangePassword from './ChangePassword';
 
 const Users: UserFullData[] = [];
 
@@ -58,6 +59,15 @@ export const convertUserResponse = (user: IUser) => {
 
 const AllUsers = () => {
   const dispatch = useAppDispatch();
+  const [openPopupChangePassword, setOpenPopupChangePassword] = useState(false);
+  const [selectedUserID, setSelectedUserID] = useState('');
+  const [pageState, setPageState] = useState({
+    page: 0,
+    pageSize: 20,
+    total: 0,
+    isLoading: true,
+    data: Users,
+  });
   const columns1: GridColDef[] = [
     {
       field: 'avatar',
@@ -80,36 +90,40 @@ const AllUsers = () => {
     {
       field: 'totalBlogs',
       headerName: 'Total Blogs',
-      width: 150,
+      width: 120,
     },
     {
       field: 'totalComments',
       headerName: 'Total Comments',
-      width: 150,
+      width: 120,
+    },
+    {
+      field: 'totalFolloweds',
+      headerName: ' Total Followeds',
+      width: 120,
+    },
+    {
+      field: 'totalFollowers',
+      headerName: ' Total Followers',
+      width: 120,
     },
     {
       field: 'totalViolations',
       headerName: ' Total Violations',
-      width: 150,
-    },
-    {
-      field: 'isActive',
-      headerName: 'Status',
-      width: 150,
-      renderCell: (params) => {
-        if (params.value) {
-          return <p>ACTIVE</p>;
-        } else {
-          return <p>DEACTIVATED</p>;
-        }
-      },
+      width: 100,
     },
     {
       field: '#',
       headerName: 'Actions',
       width: 150,
       renderCell: (params) =>
-        renderUserAction(params, handleDeleteUser, handlerViewUser),
+        renderUserAction(
+          params,
+          handleDeleteUser,
+          handlerViewUser,
+          handlerEditUser,
+          handlerChangePasswordUser,
+        ),
     },
   ];
 
@@ -142,13 +156,18 @@ const AllUsers = () => {
     }
   };
 
-  const [pageState, setPageState] = useState({
-    page: 0,
-    pageSize: 20,
-    total: 0,
-    isLoading: true,
-    data: Users,
-  });
+  const handlerEditUser = (user_id: string) => {
+    var url = process.env.KANG_BLOGGING_URL;
+    console.log(url);
+    if (url) {
+      window.open(`${url}/user/${user_id}/edit`);
+    }
+  };
+
+  const handlerChangePasswordUser = (user_id: string) => {
+    setSelectedUserID(user_id);
+    setOpenPopupChangePassword(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -167,8 +186,14 @@ const AllUsers = () => {
     };
     fetchData();
   }, [pageState.page, pageState.pageSize]);
+
   return (
     <Box sx={{ height: 600, width: '100%' }}>
+      <ChangePassword
+        userID={selectedUserID}
+        openPopUp={openPopupChangePassword}
+        closePopUp={setOpenPopupChangePassword}
+      />
       <DataGrid
         rows={pageState.data}
         rowCount={pageState.total}
