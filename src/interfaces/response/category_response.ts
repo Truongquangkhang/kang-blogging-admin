@@ -17,3 +17,11 @@ export interface CreateCategoryResponse {
         category: ICategory
     }
 }
+
+export interface UpdateCategoryResponse {
+    code: number
+    message: string
+    data: {
+        category: ICategory
+    }
+}

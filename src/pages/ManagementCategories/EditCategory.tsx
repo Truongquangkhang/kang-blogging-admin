@@ -7,16 +7,25 @@ import ApiCategory from '../../apis/kang-blogging/category';
 interface Props {
   openPopUp: boolean;
   closePopUp: any;
-  addNewCategory: any;
+  categoryId: string;
+  categoryName: string;
+  editCategory: any;
 }
 
-const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
-  const [name, setName] = useState('');
+const EditCategory = ({
+  openPopUp,
+  closePopUp,
+  categoryId,
+  categoryName,
+  editCategory,
+}: Props) => {
+  const [name, setName] = useState(categoryName);
   const [description, setDescription] = useState('');
   const dispatch = useAppDispatch();
   const handleButtonDissmis = () => {
     closePopUp();
   };
+
   const handlerButtonCreate = () => {
     if (name == '' || description == '') {
       dispatch(
@@ -28,9 +37,12 @@ const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
         }),
       );
     } else {
-      ApiCategory.createCategory({ name: name, description: description })
+      ApiCategory.editCategory(categoryId, {
+        name: name,
+        description: description,
+      })
         .then((rs) => {
-          addNewCategory(rs.data.data.category);
+          editCategory(rs.data.data.category);
           handleButtonDissmis();
         })
         .catch(() => {
@@ -53,7 +65,7 @@ const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
       <div className="p-2 bg-white md:w-1/4 h-3/5 lg:1/2 shadow-inner border-e-emerald-600 rounded-lg py-5">
         <div className="w-full p-3 justify-center items-center">
           <h2 className="font-semibold py-3 text-center text-xl">
-            Create Category
+            Edit Category
           </h2>
           <form>
             <div className="mb-4">
@@ -102,7 +114,7 @@ const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
                 onClick={() => {
                   handlerButtonCreate();
                 }}
-                value="Create"
+                value="Update"
                 className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
               />
             </div>
@@ -113,4 +125,4 @@ const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
   );
 };
 
-export default CreateCategory;
+export default EditCategory;
