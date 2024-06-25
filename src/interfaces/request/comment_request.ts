@@ -16,4 +16,21 @@ export interface GetCommentsByParamRequest {
     sortBy?: string | null
     isToxicity?: boolean | null
     userIDs?: string | null
+    isDeprecated?: boolean | null
+}
+
+export interface UpdateCommentRequest {
+    content: string
+}
+
+export interface DeleteCommentReqeust {
+    
+}
+
+export interface GetCommentRequest {
+}
+
+export interface SetCommentAsToxicRequest {
+    content: string
+    toxic_indexes: number[]
 }
