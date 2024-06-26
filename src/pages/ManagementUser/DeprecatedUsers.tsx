@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Avatar from '@mui/material/Avatar';
 import ApiUser from '../../apis/kang-blogging/user';
-import { renderUserAction } from './Helper';
+import { renderUserAction2 } from './Helper';
 import { MapErrorResponse } from '../../utils/map_data_response';
 import { useAppDispatch } from '../../hooks/useAppSelectorDitpatch';
 import { AxiosError } from 'axios';
@@ -74,7 +74,7 @@ const DeprecatedUsers = () => {
       headerName: 'Actions',
       width: 150,
       renderCell: (params) =>
-        renderUserAction(
+        renderUserAction2(
           params,
           handleDeleteUser,
           handlerViewUser,
