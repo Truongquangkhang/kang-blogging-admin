@@ -2,47 +2,50 @@ import { useState } from 'react';
 import { useAppDispatch } from '../../hooks/useAppSelectorDitpatch';
 import { setNotify } from '../../redux/reducers/notify';
 import { NotifyType } from '../../interfaces/model/notify';
-import ApiCategory from '../../apis/kang-blogging/category';
+import ApiIam from '../../apis/kang-blogging/iam';
+import { MapErrorResponse } from '../../utils/map_data_response';
+import { AxiosError } from 'axios';
 
 interface Props {
+  userID: string;
   openPopUp: boolean;
   closePopUp: any;
-  addNewCategory: any;
 }
 
-const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
+const ChangePassword = ({ userID, openPopUp, closePopUp }: Props) => {
+  console.log(userID);
+  const [newPassword, setNewPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
   const dispatch = useAppDispatch();
   const handleButtonDissmis = () => {
     closePopUp();
   };
   const handlerButtonCreate = () => {
-    if (name == '' || description == '') {
-      dispatch(
-        setNotify({
-          title: 'Missing required fields',
-          description: '',
-          mustShow: true,
-          type: NotifyType.ERROR,
-        }),
-      );
-    } else {
-      ApiCategory.createCategory({ name: name, description: description })
-        .then((rs) => {
-          addNewCategory(rs.data.data.category);
-          handleButtonDissmis();
-        })
-        .catch(() => {
+    if (newPassword == repeatPassword && newPassword != '') {
+      ApiIam.changePassword({ newPassword: newPassword, userId: userID })
+        .catch((error) => {
+          const e = MapErrorResponse((error as AxiosError).response);
           dispatch(
             setNotify({
               title: 'an occurred error',
-              description: '',
+              description: e.message,
               mustShow: true,
               type: NotifyType.ERROR,
             }),
           );
+        })
+        .finally(() => {
+          handleButtonDissmis();
         });
+    } else {
+      dispatch(
+        setNotify({
+          title: 'an occurred error',
+          description: 'invalid params',
+          mustShow: true,
+          type: NotifyType.ERROR,
+        }),
+      );
     }
   };
 
@@ -58,15 +61,15 @@ const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
           <form>
             <div className="mb-4">
               <label className="mb-2.5 block font-medium text-black dark:text-white">
-                Name
+                New Passowrd
               </label>
               <div className="relative">
                 <input
-                  value={name}
+                  value={newPassword}
                   onChange={(e) => {
-                    setName(e.target.value);
+                    setNewPassword(e.target.value);
                   }}
-                  type="text"
+                  type="password"
                   className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
@@ -74,15 +77,15 @@ const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
 
             <div className="mb-6">
               <label className="mb-2.5 block font-medium text-black dark:text-white">
-                Description
+                Repeat Password
               </label>
               <div className="relative">
                 <input
-                  value={description}
+                  value={repeatPassword}
                   onChange={(e) => {
-                    setDescription(e.target.value);
+                    setRepeatPassword(e.target.value);
                   }}
-                  type="text"
+                  type="password"
                   className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
@@ -102,7 +105,7 @@ const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
                 onClick={() => {
                   handlerButtonCreate();
                 }}
-                value="Create"
+                value="Change"
                 className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
               />
             </div>
@@ -113,4 +116,4 @@ const CreateCategory = ({ openPopUp, closePopUp, addNewCategory }: Props) => {
   );
 };
 
-export default CreateCategory;
+export default ChangePassword;

@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import DefaultLayout from '../../layout/DefaultLayout';
 import Policies from './Policies';
+import ViolationsManagement from './Violations';
 
 const ManagementPolicy = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,7 +31,7 @@ const ManagementPolicy = () => {
                 searchParams.set('tab', 'violations');
                 setSearchParams();
               }}
-              className={`${tab == 'violation' ? 'border-b-purple-600 text-purple-600' : 'hover:border-b-purple-600 hover:text-purple-600'} text-center inline-flex whitespace-nowrap border-b-2 border-transparent py-2 px-3 text-sm font-semibold  transition-all duration-200 ease-in-out cursor-pointer`}
+              className={`${tab == 'violations' ? 'border-b-purple-600 text-purple-600' : 'hover:border-b-purple-600 hover:text-purple-600'} text-center inline-flex whitespace-nowrap border-b-2 border-transparent py-2 px-3 text-sm font-semibold  transition-all duration-200 ease-in-out cursor-pointer`}
             >
               {' '}
               Violations{' '}
@@ -45,7 +46,7 @@ const ManagementPolicy = () => {
 
 const renderComponentByTab = (tab: string = 'all') => {
   if (tab == 'violations') {
-    return <div></div>;
+    return <ViolationsManagement />;
   } else {
     return <Policies />;
   }

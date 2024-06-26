@@ -14,3 +14,13 @@ export interface IRegisterRequest {
     password: string
     avatar?: string
 }
+
+export interface IChangePasswordRequest {
+    userId: string
+    oldPassword?: string | null
+    newPassword: string
+}
+
+export interface IChangePasswordResponse {
+
+}
