@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import DefaultLayout from '../../layout/DefaultLayout';
 import Policies from './Policies';
 import ViolationsManagement from './Violations';
+import ReportManagement from './ManagementReport';
 
 const ManagementPolicy = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,7 +24,7 @@ const ManagementPolicy = () => {
               className={`${tab == 'policies' ? 'border-b-purple-600 text-purple-600' : 'hover:border-b-purple-600 hover:text-purple-600'} text-center inline-flex whitespace-nowrap border-b-2 border-transparent py-2 px-3 text-sm font-semibold  transition-all duration-200 ease-in-out cursor-pointer`}
             >
               {' '}
-              All{' '}
+              Policy{' '}
             </a>
 
             <a
@@ -36,6 +37,17 @@ const ManagementPolicy = () => {
               {' '}
               Violations{' '}
             </a>
+
+            <a
+              onClick={() => {
+                searchParams.set('tab', 'reports');
+                setSearchParams();
+              }}
+              className={`${tab == 'reports' ? 'border-b-purple-600 text-purple-600' : 'hover:border-b-purple-600 hover:text-purple-600'} text-center inline-flex whitespace-nowrap border-b-2 border-transparent py-2 px-3 text-sm font-semibold  transition-all duration-200 ease-in-out cursor-pointer`}
+            >
+              {' '}
+              Report{' '}
+            </a>
           </nav>
         </div>
       </div>
@@ -47,6 +59,8 @@ const ManagementPolicy = () => {
 const renderComponentByTab = (tab: string = 'all') => {
   if (tab == 'violations') {
     return <ViolationsManagement />;
+  } else if (tab == 'reports') {
+    return <ReportManagement />;
   } else {
     return <Policies />;
   }

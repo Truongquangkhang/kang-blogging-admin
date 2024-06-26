@@ -2,24 +2,17 @@ import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import { useEffect, useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import ApiComment from '../../apis/kang-blogging/comment';
-import { IUSerMetadata } from '../../interfaces/model/user_metadata';
 import { Avatar, Stack } from '@mui/material';
 import { FormatRelativeTime } from '../../utils/convert';
-import { useAppDispatch } from '../../hooks/useAppSelectorDitpatch';
-import { MapErrorResponse } from '../../utils/map_data_response';
-import { AxiosError } from 'axios';
-import { setNotify } from '../../redux/reducers/notify';
-import { VscDebugRestart } from 'react-icons/vsc';
 import { IViolation } from '../../interfaces/model/violation';
 import ApiViolation from '../../apis/kang-blogging/violation';
 import { IoIosWarning } from 'react-icons/io';
 import { FaUserTimes } from 'react-icons/fa';
+import { IUSerMetadata } from '../../interfaces/model/user_metadata';
 
 const Violations: IViolation[] = [];
 
 const ViolationsManagement = () => {
-  const dispatch = useAppDispatch();
   const [pageState, setPageState] = useState({
     page: 0,
     pageSize: 20,
@@ -33,6 +26,11 @@ const ViolationsManagement = () => {
       field: 'description',
       headerName: 'Description',
       width: 200,
+    },
+    {
+      field: 'type',
+      headerName: 'Type',
+      width: 100,
     },
     {
       field: 'user',
@@ -86,14 +84,21 @@ const ViolationsManagement = () => {
       width: 150,
       renderCell: (params) => (
         <Stack direction="row" className="items-center w-full" spacing={1}>
-          <Tooltip title="Delete">
+          <Tooltip title="Show">
             <div
               onClick={() => {
-                handlerDeleteComment(params.row.id);
+                handlerShowDetail(params.row.type, params.row.targetId);
               }}
               className="hover:bg-slate-300"
             >
-              <VscDebugRestart />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+              >
+                <path d="M15 12c0 1.654-1.346 3-3 3s-3-1.346-3-3 1.346-3 3-3 3 1.346 3 3zm9-.449s-4.252 8.449-11.985 8.449c-7.18 0-12.015-8.449-12.015-8.449s4.446-7.551 12.015-7.551c7.694 0 11.985 7.551 11.985 7.551zm-7 .449c0-2.757-2.243-5-5-5s-5 2.243-5 5 2.243 5 5 5 5-2.243 5-5z" />
+              </svg>
             </div>
           </Tooltip>
         </Stack>
@@ -101,24 +106,11 @@ const ViolationsManagement = () => {
     },
   ];
 
-  const handlerDeleteComment = (comment_id: string) => {
-    ApiComment.deleteComment(comment_id)
-      .then(() => {
-        setPageState((prevState) => ({
-          ...prevState,
-          data: prevState.data.filter((comment) => comment.id !== comment_id),
-        }));
-      })
-      .catch((error) => {
-        const e = MapErrorResponse((error as AxiosError).response);
-        dispatch(
-          setNotify({
-            title: 'an occurred error',
-            description: e.message,
-            mustShow: true,
-          }),
-        );
-      });
+  const handlerShowDetail = (type: string, target_id: string) => {
+    var url = process.env.KANG_BLOGGING_URL;
+    if (url) {
+      window.open(`${url}/${type}/${target_id}`);
+    }
   };
 
   useEffect(() => {
